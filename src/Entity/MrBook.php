@@ -5,7 +5,6 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Repository\MrBilRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -67,6 +66,7 @@ class MrBook
   public function __construct()
   {
     $this->author = new ArrayCollection();
+    $this->mrLeads = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -152,6 +152,11 @@ class MrBook
     self::EXISTENCE_WAIT_5   => 'Доставка в течении 5 дней',
   );
 
+  /**
+   * @ORM\ManyToMany(targetEntity=MrLead::class, mappedBy="bookid")
+   */
+  private $mrLeads;
+
   public static function GetExistenceList()
   {
     return self::$existences;
@@ -215,10 +220,38 @@ class MrBook
     return $this->description;
   }
 
-  public function setDescription(?string $Description): self
+  public function setDescription(?string $description): self
   {
-    $this->description = $dription;
+    $this->description = $description;
 
     return $this;
   }
+
+  /**
+   * @return Collection|MrLead[]
+   */
+  public function getMrLeads(): Collection
+  {
+      return $this->mrLeads;
+  }
+
+  public function addMrLead(MrLead $mrLead): self
+  {
+      if (!$this->mrLeads->contains($mrLead)) {
+          $this->mrLeads[] = $mrLead;
+          $mrLead->addBookid($this);
+      }
+
+      return $this;
+  }
+
+  public function removeMrLead(MrLead $mrLead): self
+  {
+      if ($this->mrLeads->removeElement($mrLead)) {
+          $mrLead->removeBookid($this);
+      }
+
+      return $this;
+  }
+
 }

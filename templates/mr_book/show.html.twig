@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ mr_book.name }}{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<a href="{{ path('book.list') }}" class="btn btn-primary btn-sm"><< назад</a>
+		<h1>{{ mr_book.name }}</h1>
+
+		<table class="table table-sm table-hover">
+			<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ mr_book.id }}</td>
+			</tr>
+			<tr>
+				<th>Количество страниц</th>
+				<td>{{ mr_book.pageCnt }}</td>
+			</tr>
+			<tr>
+				<th>Цена</th>
+				<td>{{ mr_book.price }}</td>
+			</tr>
+			<tr>
+				<th>Наличие</th>
+				<td>{{ mr_book.getExistenceName }}</td>
+			</tr>
+			<tr>
+				<th>Год издания</th>
+				<td>{{ mr_book.year }}</td>
+			</tr>
+			<tr>
+				<th>ISBN</th>
+				<td>{{ mr_book.isbn }}</td>
+			</tr>
+			<tr>
+				<th>Url</th>
+				<td><a href="{{ mr_book.url }}" target="_blank">Ссылка на магазин</a></td>
+			</tr>
+			<tr>
+				<th>Описание книги</th>
+				<td>{{ mr_book.description }}</td>
+			</tr>
+			</tbody>
+		</table>
+
+		<div class="row">
+			{% if app.user %}
+				<div class="d-inline col-md-8">
+					<a href="{{ path('mr_book_edit', {'id': mr_book.id}) }}" class="btn btn-primary btn-sm">Редактировать</a>
+				</div>
+				<div class="d-inline col-md-4">
+					{{ include('mr_book/_delete_form.html.twig') }}
+				</div>
+			{% else %}
+				<div class="d-inline col-md-6"><a href="{{ path('mr_book_edit', {'id': mr_book.id}) }}" class="btn btn-primary btn-sm">Редактировать</a></div>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}

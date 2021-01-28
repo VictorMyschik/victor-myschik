@@ -7,17 +7,27 @@
 		<div class="col-md-10">
 			<div class="card mb-3 mt-3">
 				<div class="card-body">
-					Книг на складе всего: {{ cnt_all }}. На странице: {{ cnt }}
-					<div class="card-header">
-						<form action="/book/search">
-							<label>Поиск по каталогу
-								<input class="form-control form-control-sm" name="search" type="text" placeholder="Наименование книги">
-							</label>
-							<button type="submit" class="form-submit">search</button>
-						</form>
+					<b>Книг на складе всего: {{ cnt_all }}. На странице: {{ cnt }}</b>
+					<div class="row card-header">
+						<div class="d-inline col">
+							<form action="/book/search">
+								<label>Поиск по каталогу
+									<input class="form-control form-control-sm" name="search" type="text"
+												 placeholder="search..">
+								</label>
+								<button type="submit" class="form-submit">search</button>
+							</form>
+						</div>
+						{% if app.user %}
+							<div class="d-inline col">
+								<a href="{{ path('mr_book_new') }}" target="_blank" class="btn btn-success btn-sm mt-1">добавить
+									книгу</a>
+							</div>
+						{% endif %}
 					</div>
-					<table class="table table-sm table-hover">
-						<tr>
+
+					<table class="table table-sm table-hover mt-3">
+						<tr class="thead-light">
 							<th title="Международный стандартный книжный номер — уникальный номер книжного издания, необходимый для распространения книги в торговых сетях и автоматизации работы с изданием.">
 								ISBN
 							</th>
@@ -26,27 +36,36 @@
 							<th>Страниц</th>
 							<th>Цена, BYN</th>
 							<th>Наличие</th>
+							<th>#</th>
 						</tr>
-						{% for item in books %}
+						{% for book in books %}
 							<tr>
-								<td class="text-nowrap">{{ item.getIsbn }}</td>
+								<td class="text-nowrap">{{ book.getIsbn }}</td>
 								<td>
 									<h5>
-										{% for author in item.getAuthors %}
+										{% for author in book.getAuthors %}
 											{{ author.getName }}
 										{% endfor %}
 									</h5>
-									<h6>{{ item.getName }}</h6>
-									<div style="font-size: 0.8rem">{{ item.getDescription }}</div>
+									<h6>{{ book.getName }}</h6>
+									<div style="font-size: 0.8rem">{{ book.getDescription }}</div>
 								</td>
-								<td class="text-right">{{ item.getYear }}</td>
-								<td class="text-right">{{ item.getPagecnt }}</td>
-								<td class="text-right">{{ item.price }}</td>
-								<td class="text-right text-nowrap">
-									{% if item.getExistence == 0 %}
-										<span class="text-danger">{{ item.getExistenceName }}</span>
+								<td class="text-right">{{ book.getYear }}</td>
+								<td class="text-right">{{ book.getPagecnt }}</td>
+								<td class="text-right">{{ book.price }}</td>
+								<td class="text-nowrap">
+									{% if book.getExistence == 0 %}
+										<span class="text-danger">{{ book.getExistenceName }}</span>
 									{% else %}
-										<span>{{ item.getExistenceName }}</span>
+										<span>{{ book.getExistenceName }}</span>
+									{% endif %}
+								</td>
+
+								<td>
+									{% if app.user %}
+										<a href="{{ path('mr_book_show', {'id': book.id}) }}" class="btn btn-primary btn-sm">Подробнее</a>
+									{% elseif book.getExistence %}
+										<a href="{{ path('mr_lead_new', {'book':book.id}) }}" class="btn btn-sm btn-success">заказать</a>
 									{% endif %}
 								</td>
 							</tr>

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Заявка{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<a href="{{ path('mr_lead_index') }}" class="btn btn-primary btn-sm">Вернутся</a>
+		<h1>Заявка</h1>
+		{{ include('mr_lead/_form.html.twig') }}
+	</div>
+{% endblock %}

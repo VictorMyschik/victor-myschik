@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\MrBook;
+use App\Form\MrBookType;
+use App\Repository\MrBookRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class BookController extends AbstractController
+class MrBookController extends AbstractController
 {
   // Standard parameters for get books
   const CNT_ON_PAGE = 10;
@@ -78,5 +81,64 @@ class BookController extends AbstractController
       'books'        => $books,
       'searched_cnt' => count($books),
     ]);
+  }
+
+  public function new(Request $request): Response
+  {
+    $mrBook = new MrBook();
+    $form = $this->createForm(MrBookType::class, $mrBook);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid())
+    {
+      $entityManager = $this->getDoctrine()->getManager();
+      $entityManager->persist($mrBook);
+      $entityManager->flush();
+
+      return $this->redirectToRoute('mr_book_show', ['id'=>$mrBook->getId()]);
+    }
+
+    return $this->render('mr_book/new.html.twig', [
+      'mr_book' => $mrBook,
+      'form'    => $form->createView(),
+    ]);
+  }
+
+  public function show(MrBook $mrBook): Response
+  {
+    return $this->render('mr_book/show.html.twig', [
+      'mr_book' => $mrBook,
+    ]);
+  }
+
+  public function edit(Request $request, MrBook $mrBook): Response
+  {
+    $form = $this->createForm(MrBookType::class, $mrBook);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid())
+    {
+      $this->getDoctrine()->getManager()->flush();
+
+      return $this->redirectToRoute('mr_book_show', ['id' => $mrBook->getId()]);
+    }
+
+    return $this->render('mr_book/edit.html.twig', [
+      'mr_book' => $mrBook,
+      'form'    => $form->createView(),
+    ]);
+  }
+
+  public function delete(Request $request, MrBook $mrBook): Response
+  {
+    if ($this->isCsrfTokenValid('delete' . $mrBook->getId(), $request->request->get('_token')))
+    {
+      $entityManager = $this->getDoctrine()->getManager();
+      $entityManager->remove($mrBook);
+
+      $entityManager->flush();
+    }
+
+    return $this->redirectToRoute('book.list');
   }
 }

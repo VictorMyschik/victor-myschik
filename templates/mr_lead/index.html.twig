@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Список заявок{% endblock %}
+
+{% block body %}
+		<div class="container">
+		<h1>Список заявок</h1>
+		<table class="table table-sm table-hover">
+			<thead>
+			<tr>
+				<th>№</th>
+				<th>Статус</th>
+				<th>Номер телефона</th>
+				<th>Адрес клиента</th>
+				<th>#</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for mr_lead in mr_leads_arr %}
+				<tr>
+					<td>{{ mr_lead.getId() }}</td>
+					<td>{{ mr_lead.getStatusName() }}</td>
+					<td>{{ mr_lead.getPhone() }}</td>
+					<td>{{ mr_lead.getAddress() }}</td>
+					<td>
+						<a href="{{ path('mr_lead_show', {'lead_id': mr_lead.id}) }}">Подробно</a>
+						<a href="{{ path('mr_lead_edit', {'lead_id': mr_lead.id}) }}">Изменить</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="5">Заявок нет</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+{% endblock %}

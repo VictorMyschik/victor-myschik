@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MrBook index{% endblock %}
+
+{% block body %}
+    <h1>MrBook index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Page_cnt</th>
+                <th>Price</th>
+                <th>Existence</th>
+                <th>Year</th>
+                <th>Isbn</th>
+                <th>Url</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for mr_book in mr_books %}
+            <tr>
+                <td>{{ mr_book.id }}</td>
+                <td>{{ mr_book.name }}</td>
+                <td>{{ mr_book.pageCnt }}</td>
+                <td>{{ mr_book.price }}</td>
+                <td>{{ mr_book.existence }}</td>
+                <td>{{ mr_book.year }}</td>
+                <td>{{ mr_book.isbn }}</td>
+                <td>{{ mr_book.url }}</td>
+                <td>{{ mr_book.description }}</td>
+                <td>
+                    <a href="{{ path('mr_book_show', {'id': mr_book.id}) }}">show</a>
+                    <a href="{{ path('mr_book_edit', {'id': mr_book.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('mr_book_new') }}">Create new</a>
+{% endblock %}

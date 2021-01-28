@@ -14,12 +14,13 @@
 									<div class="alert alert-danger">
 										{{ error.messageKey|trans(error.messageData, 'security') }}
 									</div>
-								{% endif %} {% if app.user %}
-									<div class="mb-3">
-										<a href="{{ path('book.list') }}">Список книг</a>
-									</div>
+								{% endif %}
+
+								<div><a href="{{ path('book.list') }}">Список книг доступен всем</a></div>
+								{% if app.user %}
+									<div><a href="{{ path('mr_lead_index') }}">Список заявок</a></div>
 								{% else %}
-									<a href="{{ path('book.list') }}">Список книг доступен всем</a>
+
 									<div class="card-header mb-3 mt-5">Но можно авторизоваться</div>
 									<div class="form-group">
 										<label for="email" class="col-md-4 control-label"
