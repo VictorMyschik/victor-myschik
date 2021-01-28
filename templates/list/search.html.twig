@@ -1,14 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Список книг{% endblock %}
+{% block title %}Поиск книг{% endblock %}
 
 {% block body %}
 	<div class="row">
 		<div class="col-md-10">
 			<div class="card mb-3 mt-3">
 				<div class="card-body">
-					Книг на складе всего: {{ cnt_all }}. На странице: {{ cnt }}
-					<div class="card-header">
+					<div class="card-header">Найдено: {{ searched_cnt }}
 						<form action="/book/search">
 							<label>Поиск по каталогу
 								<input class="form-control form-control-sm" name="search" type="text" placeholder="Наименование книги">

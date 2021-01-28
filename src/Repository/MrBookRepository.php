@@ -61,24 +61,14 @@ class MrBookRepository extends ServiceEntityRepository
    */
   public function searchBooks(array $parameters): array
   {
-    $query = $this->createQueryBuilder('t')
-      ->where('t.name LIKE :query_text')
-      ->setParameter('query_text', pg_escape_literal$parameters['query_text'])
-      ->setFirstResult($parameters['page'])
-      ->setMaxResults($parameters['on_page']);
-
-    $paginator = new Paginator($query, $fetchJoinCollection = true);
-
-    $result = array();
-    
-
-    foreach ($paginator as $post)
-    {
-      $result[] = $post;
-    }
-
-    return $result;
+    return $this->createQueryBuilder('b')
+      ->where('b.name LIKE :query_text')
+      ->orWhere('b.description LIKE :query_text')
+      ->orWhere('b.year = ' . (int)$parameters['query_text'])
+      ->setParameter('query_text', '%' . htmlspecialchars($parameters['query_text']) . '%')
+      ->setMaxResults($parameters['max_result'])
+      ->getQuery()
+      ->getResult();
   }
-
-
 }
+

@@ -5,3 +5,8 @@ book.list:
   path: '/books/list'
   defaults:
     _controller: 'App\Controller\BookController::index'
+
+book.search:
+  path: '/book/search'
+  defaults:
+    _controller: 'App\Controller\BookController::searchBooks'

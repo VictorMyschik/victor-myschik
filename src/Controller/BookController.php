@@ -6,7 +6,6 @@ use App\Entity\MrBook;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class BookController extends AbstractController
 {
@@ -49,29 +48,35 @@ class BookController extends AbstractController
     );
   }
 
+  // Constants for search books
   const MAX_LENGTH_SEARCH_TEXT = 100;
+  const MAX_RESULT = 10;
 
   /**
    * Search books by text query. Can use standard parameters (on_page, page)
    *
    * @param Request $request
+   * @return Response
    */
   public function searchBooks(Request $request)
   {
     $repository = $this->getDoctrine()->getRepository(MrBook::class);
 
-    $parameters = $this->getStandardParameters($request->query->getIterator()->getArrayCopy());
-
     $books = array();
 
     if ($query_text = $request->query->getIterator()->getArrayCopy()['search'] ?? '')
     {
-      $parameters['query_text'] = substr($query_text, 0, self::MAX_LENGTH_SEARCH_TEXT);
+      $parameters = array(
+        'query_text' => substr($query_text, 0, self::MAX_LENGTH_SEARCH_TEXT),
+        'max_result' => self::MAX_RESULT,
+      );
 
       $books = $repository->searchBooks($parameters);
     }
 
-    dd($books);
-
+    return $this->render('list/search.html.twig', [
+      'books'        => $books,
+      'searched_cnt' => count($books),
+    ]);
   }
 }

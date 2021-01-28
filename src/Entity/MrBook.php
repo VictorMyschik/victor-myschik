@@ -27,7 +27,7 @@ class MrBook
   /**
    * @ORM\Column(type="string", length=255, nullable=true)
    */
-  private $Name;
+  private $name;
 
   /**
    * @ORM\Column(type="integer", nullable=true)
@@ -62,7 +62,7 @@ class MrBook
   /**
    * @ORM\Column(type="string", length=10000, nullable=true)
    */
-  private $Description;
+  private $description;
 
   public function __construct()
   {
@@ -104,12 +104,12 @@ class MrBook
 
   public function getName(): ?string
   {
-    return $this->Name;
+    return $this->name;
   }
 
-  public function setName(?string $Name): self
+  public function setName(?string $name): self
   {
-    $this->Name = $Name;
+    $this->name = $name;
 
     return $this;
   }
@@ -212,12 +212,12 @@ class MrBook
 
   public function getDescription(): ?string
   {
-    return $this->Description;
+    return $this->description;
   }
 
   public function setDescription(?string $Description): self
   {
-    $this->Description = $Description;
+    $this->description = $dription;
 
     return $this;
   }
