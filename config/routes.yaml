@@ -1,0 +1,7 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+book.list:
+  path: '/books/list'
+  defaults:
+    _controller: 'App\Controller\BookController::index'

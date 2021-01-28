@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Список книг{% endblock %}
+
+{% block body %}
+	<div class="row">
+		<div class="col-md-10">
+			<div class="card mb-3 mt-3">
+				<div class="card-body">
+					<div class="card-header">Книг на складе всего: {{ cnt_all }}. На странице: {{ cnt }}</div>
+					<table class="table table-sm table-hover">
+						<tr>
+							<th title="Международный стандартный книжный номер — уникальный номер книжного издания, необходимый для распространения книги в торговых сетях и автоматизации работы с изданием.">
+								ISBN
+							</th>
+							<th>Наименование</th>
+							<th>Год</th>
+							<th>Страниц</th>
+							<th>Цена, BYN</th>
+							<th>Наличие</th>
+						</tr>
+						{% for item in books %}
+							<tr>
+								<td class="text-nowrap">{{ item.getIsbn }}</td>
+								<td>
+									<h5>
+										{% for author in item.getAuthors %}
+											{{ author.getName }}
+										{% endfor %}
+									</h5>
+									<h6>{{ item.getName }}</h6>
+									<div style="font-size: 0.8rem">{{ item.getDescription }}</div>
+								</td>
+								<td class="text-right">{{ item.getYear }}</td>
+								<td class="text-right">{{ item.getPagecnt }}</td>
+								<td class="text-right">{{ item.price }}</td>
+								<td class="text-right text-nowrap">
+									{% if item.getExistence == 0 %}
+										<span class="text-danger">{{ item.getExistenceName }}</span>
+									{% else %}
+										<span>{{ item.getExistenceName }}</span>
+									{% endif %}
+								</td>
+							</tr>
+						{% endfor %}
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
