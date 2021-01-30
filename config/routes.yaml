@@ -60,3 +60,9 @@ api.books.view:
   methods: GET
   requirements:
     book_id: '\d+'
+
+# Search book
+api.books.search:
+  path: '/api/books/search'
+  controller: 'App\Controller\Api\ApiBookController::searchBook'
+  methods: GET

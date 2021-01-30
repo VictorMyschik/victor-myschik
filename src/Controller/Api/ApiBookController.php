@@ -73,4 +73,47 @@ class ApiBookController extends ApiBaseController
 			return $this->response($out, 404);
 		}
 	}
+
+	// Constants for search books
+	const MAX_LENGTH_SEARCH_TEXT = 100;
+	const MAX_RESULT = 10;
+
+	/**
+	 * Search book
+	 * Parameters: search - string query, max length = 100 symbols
+	 *             limit - max result
+	 *
+	 * @param Request $request
+	 * @return JsonResponse
+	 */
+	public function searchBook(Request $request): JsonResponse
+	{
+		$books = array();
+		$repository = $this->getDoctrine()->getRepository(MrBook::class);
+
+		$query_param = $request->query->getIterator()->getArrayCopy();
+		$limit = $query_param['limit'] ?? self::MAX_RESULT;
+
+		if ($query_text = $query_param['search'] ?? '')
+		{
+			$parameters = array(
+					'query_text' => substr($query_text, 0, self::MAX_LENGTH_SEARCH_TEXT),
+					'max_result' => (int)$limit <= self::MAX_RESULT ? (int)$limit : self::MAX_RESULT, // disable get all catalog
+			);
+
+			$books = $repository->searchBooks($parameters);
+		}
+
+		$searched_cnt = count($books);
+
+		$out = array();
+		$out['searched_cnt'] = $searched_cnt;
+
+		if ($searched_cnt)
+		{
+			$out['books'] = $repository->toOut($books);
+		}
+
+		return $this->response($out);
+	}
 }

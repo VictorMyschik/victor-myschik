@@ -74,7 +74,7 @@ class MrBookRepository extends ServiceEntityRepository
 	/**
 	 * Convert object to array
 	 *
-	 * @param array $books
+	 * @param MrBook[] $books
 	 * @return array
 	 */
 	public function toOut(array $books): array
