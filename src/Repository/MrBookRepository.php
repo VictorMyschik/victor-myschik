@@ -83,28 +83,38 @@ class MrBookRepository extends ServiceEntityRepository
 
 		foreach ($books as $book)
 		{
-			/// authors
-			$author_out = array();
-
-			foreach ($book->getAuthors() as $author)
-			{
-				$author_out[] = $author->getName();
-			}
-
-			$out[] = array(
-					'id'        => $book->getId(),
-					'name'      => $book->getName(),
-					'page_cnt'  => $book->getPageCnt(),
-					'price'     => $book->getPrice(),
-					'existence' => $book->getExistenceName(),
-					'year'      => $book->getYear(),
-					'isbn'      => $book->getIsbn(),
-					'url'       => $book->getUrl(),
-					'authors'   => $author_out,
-			);
+			$out[] = $this->toSingleBookOut($book);
 		}
 
 		return $out;
+	}
+
+	/**
+	 * Return info about single book
+	 *
+	 * @param MrBook $book
+	 * @return array
+	 */
+	public function toSingleBookOut(MrBook $book): array
+	{
+		$author_out = array();
+
+		foreach ($book->getAuthors() as $author)
+		{
+			$author_out[] = $author->getName();
+		}
+
+		return array(
+				'id'        => $book->getId(),
+				'name'      => $book->getName(),
+				'page_cnt'  => $book->getPageCnt(),
+				'price'     => $book->getPrice(),
+				'existence' => $book->getExistenceName(),
+				'year'      => $book->getYear(),
+				'isbn'      => $book->getIsbn(),
+				'url'       => $book->getUrl(),
+				'authors'   => $author_out,
+		);
 	}
 }
 

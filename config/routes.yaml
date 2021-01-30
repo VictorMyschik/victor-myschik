@@ -3,64 +3,60 @@
 #    controller: App\Controller\DefaultController::index
 book.list:
   path: '/books/list'
-  defaults:
-    _controller: 'App\Controller\MrBookController::index'
+  controller: 'App\Controller\MrBookController::index'
 
 book.search:
   path: '/book/search'
-  defaults:
-    _controller: 'App\Controller\MrBookController::searchBooks'
+  controller: 'App\Controller\MrBookController::searchBooks'
 
 mr_book_show:
   path: '/book/{id}/show'
-  defaults:
-    _controller: 'App\Controller\MrBookController::show'
+  controller: 'App\Controller\MrBookController::show'
 
 mr_book_edit:
   path: '/book/{id}/edit'
-  defaults:
-    _controller: 'App\Controller\MrBookController::edit'
+  controller: 'App\Controller\MrBookController::edit'
 
 mr_book_new:
   path: '/books/new'
-  defaults:
-    _controller: 'App\Controller\MrBookController::new'
+  controller: 'App\Controller\MrBookController::new'
 
 mr_book_delete:
   path: '/book/{id}/delete'
-  defaults:
-    _controller: 'App\Controller\MrBookController::delete'
+  controller: 'App\Controller\MrBookController::delete'
 
 #Leads
 mr_lead_index:
   path: '/leads'
-  defaults:
-    _controller: 'App\Controller\MrLeadController::index'
+  controller: 'App\Controller\MrLeadController::index'
 
 mr_lead_new:
   path: '/lead/new/{book}'
-  defaults:
-    _controller: 'App\Controller\MrLeadController::new'
+  controller: 'App\Controller\MrLeadController::new'
 
 mr_lead_show:
   path: '/lead/{lead_id}'
-  defaults:
-    _controller: 'App\Controller\MrLeadController::show'
+  controller: 'App\Controller\MrLeadController::show'
 
 mr_lead_edit:
   path: '/lead/{lead_id}/edit'
-  defaults:
-    _controller: 'App\Controller\MrLeadController::edit'
+  controller: 'App\Controller\MrLeadController::edit'
 
 mr_lead_delete:
   path: '/lead/{lead_id}/delete'
-  defaults:
-    _controller: 'App\Controller\MrLeadController::delete'
+  controller: 'App\Controller\MrLeadController::delete'
 
 # API
 # Get list of has book
 api.books.list:
   path: '/api/books/list'
-  defaults:
-    _controller: 'App\Controller\Api\ApiBookController::list'
+  controller: 'App\Controller\Api\ApiBookController::list'
   methods: GET
+
+# Get info about single book
+api.books.view:
+  path: '/api/book/{book_id}'
+  controller: 'App\Controller\Api\ApiBookController::view'
+  methods: GET
+  requirements:
+    book_id: '\d+'

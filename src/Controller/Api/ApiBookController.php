@@ -51,4 +51,26 @@ class ApiBookController extends ApiBaseController
 				'page'    => (int)($query_arr['page'] ?? self::PAGE)
 		);
 	}
+
+	/**
+	 * Info about single book
+	 *
+	 * @param int $book_id
+	 * @return JsonResponse
+	 */
+	public function view(int $book_id): JsonResponse
+	{
+		$repository = $this->getDoctrine()->getRepository(MrBook::class);
+
+		/** @var MrBook $book */
+		if ($book = $repository->find($book_id))
+		{
+			$out = $repository->toSingleBookOut($book);
+			return $this->response($out);
+		} else
+		{
+			$out = ['Book not found'];
+			return $this->response($out, 404);
+		}
+	}
 }
