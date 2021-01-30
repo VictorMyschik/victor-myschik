@@ -56,3 +56,11 @@ mr_lead_delete:
   path: '/lead/{lead_id}/delete'
   defaults:
     _controller: 'App\Controller\MrLeadController::delete'
+
+# API
+# Get list of has book
+api.books.list:
+  path: '/api/books/list'
+  defaults:
+    _controller: 'App\Controller\Api\ApiBookController::list'
+  methods: GET
