@@ -66,3 +66,9 @@ api.books.search:
   path: '/api/books/search'
   controller: 'App\Controller\Api\ApiBookController::searchBook'
   methods: GET
+
+# Create new book
+api.books.new:
+  path: '/api/books/new'
+  controller: 'App\Controller\Api\ApiBookController::new'
+  methods: POST

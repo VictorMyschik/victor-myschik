@@ -3,11 +3,20 @@
 namespace App\Controller\Api;
 
 use App\Entity\MrBook;
+use App\Form\MrBookType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class ApiBookController extends ApiBaseController
 {
+	protected $queryParameters;
+
+	public function __construct(RequestStack $requestStack)
+	{
+		$this->queryParameters = $requestStack->getCurrentRequest()->query->getIterator()->getArrayCopy();
+	}
+
 	/**
 	 * Return list of books
 	 *
@@ -104,14 +113,55 @@ class ApiBookController extends ApiBaseController
 			$books = $repository->searchBooks($parameters);
 		}
 
-		$searched_cnt = count($books);
+		$searchedCnt = count($books);
 
 		$out = array();
-		$out['searched_cnt'] = $searched_cnt;
+		$out['searchedCnt'] = $searchedCnt;
 
-		if ($searched_cnt)
+		if ($searchedCnt)
 		{
 			$out['books'] = $repository->toOut($books);
+		}
+
+		return $this->response($out);
+	}
+
+	/**
+	 * Create new book
+	 *
+	 * @return JsonResponse
+	 */
+	public function new(Request $request): JsonResponse
+	{
+		/*$user = $this->getUser();
+		if (!$user || !$user->isAdmin())
+		{
+			return $this->response(['Access violation'], 503);
+		}*/
+
+		try
+		{
+			$v = $request->request->all();
+
+			$mrBook = new MrBook();
+
+			$form = $this->createForm(MrBookType::class, $mrBook);
+			$form->submit($v);
+
+			$entityManager = $this->getDoctrine()->getManager();
+			$entityManager->persist($mrBook);
+			$entityManager->flush();
+
+			$out = array(
+					'created' => 'success',
+					'id'      => $mrBook->getId(),
+			);
+		} catch (\Exception $e)
+		{
+			$out = array(
+					'created' => 'error',
+					'message' => $e->getMessage(),
+			);
 		}
 
 		return $this->response($out);
