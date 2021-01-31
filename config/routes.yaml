@@ -72,3 +72,11 @@ api.books.new:
   path: '/api/books/new'
   controller: 'App\Controller\Api\ApiBookController::new'
   methods: POST
+
+# Delete book
+api.books.delete:
+  path: '/api/books/{book_id}/delete'
+  controller: 'App\Controller\Api\ApiBookController::delete'
+  methods: DELETE
+  requirements:
+    book_id: '\d+'

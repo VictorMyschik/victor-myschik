@@ -136,7 +136,7 @@ class ApiBookController extends ApiBaseController
 		/*$user = $this->getUser();
 		if (!$user || !$user->isAdmin())
 		{
-			return $this->response(['Access violation'], 503);
+			return $this->response([self::ACCESS_VIOLATION], 503);
 		}*/
 
 		try
@@ -165,5 +165,35 @@ class ApiBookController extends ApiBaseController
 		}
 
 		return $this->response($out);
+	}
+
+	/**
+	 * Delete book
+	 *
+	 * @param int $book_id
+	 * @return JsonResponse
+	 */
+	public function delete(int $book_id): JsonResponse
+	{
+		$repository = $this->getDoctrine()->getRepository(MrBook::class);
+
+		/** @var MrBook $book */
+		if ($book = $repository->find($book_id))
+		{
+			if (!$this->getUser() || !$book->canDelete($this->getUser()))
+			{
+				return $this->response([self::ACCESS_VIOLATION], 503);
+			}
+
+			$entityManager = $this->getDoctrine()->getManager();
+			$entityManager->remove($book);
+			$entityManager->flush();
+
+			return $this->response(['deleted']);
+		} else
+		{
+			$out = ['Book not found'];
+			return $this->response($out, 404);
+		}
 	}
 }

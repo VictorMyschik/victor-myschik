@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ApiBaseController extends AbstractController
 {
+	const ACCESS_VIOLATION = 'Access violation';
+
 	/**
 	 * Returns a JSON response
 	 *
