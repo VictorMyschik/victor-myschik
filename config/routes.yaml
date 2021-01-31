@@ -80,3 +80,9 @@ api.books.delete:
   methods: DELETE
   requirements:
     book_id: '\d+'
+
+# API Lead
+api.leads.list:
+  path: '/api/leads/list'
+  controller: 'App\Controller\Api\ApiLeadController::list'
+  methods: GET

@@ -4,19 +4,13 @@ namespace App\Controller\Api;
 
 use App\Entity\MrBook;
 use App\Form\MrBookType;
+use App\Helper\BookHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ApiBookController extends ApiBaseController
 {
-	protected $queryParameters;
-
-	public function __construct(RequestStack $requestStack)
-	{
-		$this->queryParameters = $requestStack->getCurrentRequest()->query->getIterator()->getArrayCopy();
-	}
-
 	/**
 	 * Return list of books
 	 *
@@ -29,7 +23,7 @@ class ApiBookController extends ApiBaseController
 		$parameters = $this->getStandardParameters($request->query->getIterator()->getArrayCopy());
 
 		$books = $repository->getByParameters($parameters);
-		$books_out = $repository->toOut($books);
+		$books_out = BookHelper::toOut($books);
 
 		// TODO: do with cache in future
 		$cnt_books = $repository->getBookCount();
@@ -74,7 +68,7 @@ class ApiBookController extends ApiBaseController
 		/** @var MrBook $book */
 		if ($book = $repository->find($book_id))
 		{
-			$out = $repository->toSingleBookOut($book);
+			$out = BookHelper::toSingleBookOut($book);
 			return $this->response($out);
 		} else
 		{
@@ -120,7 +114,7 @@ class ApiBookController extends ApiBaseController
 
 		if ($searchedCnt)
 		{
-			$out['books'] = $repository->toOut($books);
+			$out['books'] = BookHelper::toOut($books);
 		}
 
 		return $this->response($out);
