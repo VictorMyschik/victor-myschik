@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MrBookRepository")
  */
-class MrBook
+class MrBook extends MrOrm
 {
 	/**
 	 * @ORM\Id()
@@ -259,7 +258,7 @@ class MrBook
 
 	public function canDelete(UserInterface $user): bool
 	{
-		foreach($user->getRoles() as $role)
+		foreach ($user->getRoles() as $role)
 		{
 			if ($role == 'ROLE_USER')
 			{
@@ -268,5 +267,10 @@ class MrBook
 		}
 
 		return false;
+	}
+
+	public function isExistence(): bool
+	{
+		return $this->getExistence() != self::EXISTENCE_NO;
 	}
 }
