@@ -91,4 +91,9 @@ api.leads.list:
 api.leads.add:
   path: '/api/leads/add/{book_id}'
   controller: 'App\Controller\Api\ApiLeadController::add'
-  #methods: GET
+  methods: POST
+
+api.leads.sent:
+  path: '/api/leads/sent'
+  controller: 'App\Controller\Api\ApiLeadController::sentLead'
+  methods: POST

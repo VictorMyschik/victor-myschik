@@ -10,6 +10,20 @@ class ApiBaseController extends AbstractController
 	const ACCESS_VIOLATION = 'Access violation';
 
 	/**
+	 * Get request parameters
+	 *
+	 * @param $request
+	 * @return array
+	 */
+	public function v($request): array
+	{
+		$get = $request->query->getIterator()->getArrayCopy();
+		$post = $v = $request->request->all();
+
+		return array_merge($get, $post);
+	}
+
+	/**
 	 * Returns a JSON response
 	 *
 	 * @param array $data

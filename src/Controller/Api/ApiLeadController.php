@@ -14,10 +14,9 @@ class ApiLeadController extends ApiBaseController
 	/**
 	 * Return list of leads
 	 *
-	 * @param Request $request
 	 * @return JsonResponse
 	 */
-	public function list(Request $request): JsonResponse
+	public function list(): JsonResponse
 	{
 		$repository = $this->getDoctrine()->getRepository(MrLead::class);
 
@@ -34,29 +33,89 @@ class ApiLeadController extends ApiBaseController
 	}
 
 	/**
+	 * Create lead or add book to old lead
+	 *
+	 * @param Request $request
 	 * @param int $book_id
 	 * @return JsonResponse
 	 */
-	public function add(int $book_id): JsonResponse
+	public function add(Request $request, int $book_id): JsonResponse
 	{
-		$entityManager = $this->getDoctrine()->getManager();
-		MrOrm::setEntityManager($entityManager);
+		$em = $this->getDoctrine()->getManager();
+		MrOrm::setEntityManager($em);
 
+		$v = $this->v($request);
+
+		$identifier = $this->getUserIdentifier();
+		$phone = $v['phone'] ?? null;
+		$address = $v['address'] ?? null;
+
+		/** @var MrBook $book */
 		$book = MrBook::load($book_id);
 
 		if (!$book || !$book->isExistence())
 		{
-			return $this->response(['Book not existence']);
+			return $this->response(["Book not found or is not existence"], 422);
 		}
 
-		$identifier = $this->getUserIdentifier();
+		/** @var MrLead $lead */
 		$lead = MrLead::loadBy([
-				'identifier' => $identifier,
-				'status'     => MrLead::STATUS_NEW,
+			'identifier' => $identifier,
+			'status' => MrLead::STATUS_NEW,
 		]);
 
-		dd($lead);
+		// If is new client or new lead
+		if (!$lead)
+		{
+			$lead = new MrLead();
+			$lead->setStatus(MrLead::STATUS_NEW);
+			$lead->setIdentifier($identifier);
+		}
 
+		// Client can change phone or address
+		if ($phone)
+		{
+			$lead->setPhone($phone);
+		}
+
+		if ($address)
+		{
+			$lead->setAddress($address);
+		}
+
+		$lead->addBookid($book);
+		$lead->save();
+
+		return $this->response(['Book added to lead']);
+	}
+
+	/**
+	 * Sent lead client to work
+	 */
+	public function sentLead(): JsonResponse
+	{
+		$em = $this->getDoctrine()->getManager();
+		MrOrm::setEntityManager($em);
+
+		$identifier = $this->getUserIdentifier();
+		/** @var MrLead $lead */
+		$lead = MrLead::loadBy([
+			'identifier' => $identifier,
+			'status' => MrLead::STATUS_NEW,
+		]);
+
+		if ($lead)
+		{
+			$lead->setStatus(MrLead::STATUS_WORK);
+			$lead->save();
+
+			$out = ['Thank you, your application has been sent.'];
+		} else
+		{
+			$out = ['Please, add book to create lead.'];
+		}
+
+		return $this->response($out);
 	}
 
 	/**
