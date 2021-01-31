@@ -97,3 +97,8 @@ api.leads.sent:
   path: '/api/leads/sent'
   controller: 'App\Controller\Api\ApiLeadController::sentLead'
   methods: POST
+
+api.leads.status-change:
+  path: '/api/leads/{lead_id}/change-lead-status'
+  controller: 'App\Controller\Api\ApiLeadController::changeLeadStatus'
+  methods: POST

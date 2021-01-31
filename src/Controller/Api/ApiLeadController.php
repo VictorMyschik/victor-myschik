@@ -21,6 +21,7 @@ class ApiLeadController extends ApiBaseController
 		$repository = $this->getDoctrine()->getRepository(MrLead::class);
 
 		$leads = $repository->findAll();
+
 		/** @var MrLead[] $leads */
 		$leads_out = BookHelper::toLeadsOut($leads);
 
@@ -60,8 +61,8 @@ class ApiLeadController extends ApiBaseController
 
 		/** @var MrLead $lead */
 		$lead = MrLead::loadBy([
-			'identifier' => $identifier,
-			'status' => MrLead::STATUS_NEW,
+				'identifier' => $identifier,
+				'status'     => MrLead::STATUS_NEW,
 		]);
 
 		// If is new client or new lead
@@ -100,8 +101,8 @@ class ApiLeadController extends ApiBaseController
 		$identifier = $this->getUserIdentifier();
 		/** @var MrLead $lead */
 		$lead = MrLead::loadBy([
-			'identifier' => $identifier,
-			'status' => MrLead::STATUS_NEW,
+				'identifier' => $identifier,
+				'status'     => MrLead::STATUS_NEW,
 		]);
 
 		if ($lead)
@@ -130,5 +131,38 @@ class ApiLeadController extends ApiBaseController
 		$r = md5($r);
 
 		return $r;
+	}
+
+	/**
+	 * Manege lead
+	 *
+	 * @param Request $request
+	 * @param int $lead_id
+	 * @return JsonResponse
+	 */
+	public function changeLeadStatus(Request $request, int $lead_id): JsonResponse
+	{
+		$em = $this->getDoctrine()->getManager();
+		MrOrm::setEntityManager($em);
+
+		/** @var MrLead $lead */
+		$lead = MrLead::load($lead_id);
+		$user = $this->getUser();
+
+		if (!$user || !$lead || !$lead->canEdit($user))
+		{
+			return $this->response([self::ACCESS_VIOLATION], 503);
+		}
+
+		$v = $this->v($request);
+
+		if ($v['status'] ?? null)
+		{
+			$lead->setStatus((int)$v['status']);
+		}
+
+		$lead->save();
+
+		return $this->response(['Lead edited']);
 	}
 }
